@@ -1,0 +1,37 @@
+# Composer
+/vendor/
+composer.lock
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+wp-content/cache/
+wp-content/backups/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Build
+/build/
+/dist/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.phpunit.result.cache
