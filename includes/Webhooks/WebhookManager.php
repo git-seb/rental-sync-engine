@@ -212,12 +212,17 @@ class WebhookManager {
         // Normalize booking data
         $normalized_booking = $handler->normalize_booking($booking_data);
 
-        // Save to database
+        // Create or update WooCommerce order first
+        $order_manager = new \RentalSyncEngine\WooCommerce\OrderManager($this->logger);
+        $order_id = $order_manager->create_or_update_order($normalized_booking, $platform);
+
+        // Save booking to database with order ID
         $database_manager = new \RentalSyncEngine\Core\DatabaseManager();
         $booking_id = $database_manager->save_booking(array(
             'pms_platform' => $platform,
             'pms_booking_id' => $normalized_booking['id'],
             'pms_listing_id' => $normalized_booking['listing_id'],
+            'wc_order_id' => $order_id ?: null,
             'booking_data' => $normalized_booking,
             'booking_status' => $normalized_booking['status'],
             'check_in_date' => $normalized_booking['check_in'],
@@ -227,30 +232,10 @@ class WebhookManager {
             'total_amount' => $normalized_booking['total_amount'],
         ));
 
-        // Create or update WooCommerce order
-        $order_manager = new \RentalSyncEngine\WooCommerce\OrderManager($this->logger);
-        $order_id = $order_manager->create_or_update_order($normalized_booking, $platform);
-
-        if ($order_id) {
-            $database_manager->save_booking(array(
-                'pms_platform' => $platform,
-                'pms_booking_id' => $normalized_booking['id'],
-                'pms_listing_id' => $normalized_booking['listing_id'],
-                'wc_order_id' => $order_id,
-                'booking_data' => $normalized_booking,
-                'booking_status' => $normalized_booking['status'],
-                'check_in_date' => $normalized_booking['check_in'],
-                'check_out_date' => $normalized_booking['check_out'],
-                'guest_name' => $normalized_booking['guest_name'],
-                'guest_email' => $normalized_booking['guest_email'],
-                'total_amount' => $normalized_booking['total_amount'],
-            ));
-        }
-
         $this->logger->info(
             sprintf('Processed booking webhook for booking %s', $normalized_booking['id']),
             'webhook',
-            array('platform' => $platform, 'booking_id' => $normalized_booking['id'])
+            array('platform' => $platform, 'booking_id' => $normalized_booking['id'], 'order_id' => $order_id)
         );
     }
 

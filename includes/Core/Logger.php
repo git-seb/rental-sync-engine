@@ -155,8 +155,12 @@ class Logger {
         }
 
         $where_clause = implode(' AND ', $where);
-        $order = in_array($args['order'], array('ASC', 'DESC')) ? $args['order'] : 'DESC';
+        
+        // Validate order direction - use whitelist approach for security
+        $allowed_orders = array('ASC', 'DESC');
+        $order = in_array(strtoupper($args['order']), $allowed_orders, true) ? strtoupper($args['order']) : 'DESC';
 
+        // Build query with validated ORDER direction
         $query = $wpdb->prepare(
             "SELECT * FROM {$table_name} WHERE {$where_clause} ORDER BY created_at {$order} LIMIT %d OFFSET %d",
             $args['limit'],

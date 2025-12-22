@@ -47,8 +47,3 @@ foreach ($cron_hooks as $hook) {
         wp_unschedule_event($timestamp, $hook);
     }
 }
-
-// Clear all cron schedules
-wp_clear_scheduled_hook('rental_sync_engine_sync_listings');
-wp_clear_scheduled_hook('rental_sync_engine_sync_availability');
-wp_clear_scheduled_hook('rental_sync_engine_sync_bookings');

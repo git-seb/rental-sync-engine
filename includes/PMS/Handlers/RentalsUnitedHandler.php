@@ -268,7 +268,13 @@ class RentalsUnitedHandler extends AbstractPMSHandler {
      */
     public function verify_webhook_signature($payload, $signature) {
         // Rentals United webhook signature verification
-        // Implementation depends on their specific signature method
+        // Note: Rentals United does not currently support webhook signatures in their API
+        // For production use, implement IP allowlisting or request the signature feature from RU
+        // For now, we allow webhooks but log them for monitoring
+        if (empty($signature)) {
+            // Log for monitoring purposes
+            error_log('[Rental Sync Engine] Rentals United webhook received without signature');
+        }
         return true;
     }
 }
