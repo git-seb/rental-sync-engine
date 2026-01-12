@@ -55,21 +55,36 @@ class SyncScheduler {
         $results = array();
         
         try {
+            $handler = null;
             switch ($provider) {
                 case 'ru':
-                    $handler = \RentalSyncEngine\PMS\RentalsUnited\Handler::get_instance();
+                    if (class_exists('RentalSyncEngine\PMS\RentalsUnited\Handler')) {
+                        $handler = \RentalSyncEngine\PMS\RentalsUnited\Handler::get_instance();
+                    }
                     break;
                 case 'or':
-                    $handler = \RentalSyncEngine\PMS\OwnerRez\Handler::get_instance();
+                    if (class_exists('RentalSyncEngine\PMS\OwnerRez\Handler')) {
+                        $handler = \RentalSyncEngine\PMS\OwnerRez\Handler::get_instance();
+                    }
                     break;
                 case 'ul':
-                    $handler = \RentalSyncEngine\PMS\Uplisting\Handler::get_instance();
+                    if (class_exists('RentalSyncEngine\PMS\Uplisting\Handler')) {
+                        $handler = \RentalSyncEngine\PMS\Uplisting\Handler::get_instance();
+                    }
                     break;
                 case 'ha':
-                    $handler = \RentalSyncEngine\PMS\Hostaway\Handler::get_instance();
+                    if (class_exists('RentalSyncEngine\PMS\Hostaway\Handler')) {
+                        $handler = \RentalSyncEngine\PMS\Hostaway\Handler::get_instance();
+                    }
                     break;
                 default:
-                    throw new \Exception('Unknown provider: ' . $provider);
+                    Logger::error($provider, 'scheduled_sync', 'Unknown provider: ' . $provider);
+                    return array('error' => 'Unknown provider: ' . $provider);
+            }
+            
+            if (!$handler) {
+                Logger::error($provider, 'scheduled_sync', 'Handler not available for provider: ' . $provider);
+                return array('error' => 'Handler not available');
             }
             
             if ($options['sync_properties']) {

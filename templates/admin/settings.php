@@ -110,6 +110,7 @@ if (isset($_POST['rental_sync_save_settings'])) {
                             <option value="yes" <?php selected(Settings::get('rental_sync_engine_ru_enabled', 'no'), 'yes'); ?>><?php _e('Yes', 'rental-sync-engine'); ?></option>
                             <option value="no" <?php selected(Settings::get('rental_sync_engine_ru_enabled', 'no'), 'no'); ?>><?php _e('No', 'rental-sync-engine'); ?></option>
                         </select>
+                        <p class="description"><?php _e('Enable or disable Rentals United integration. When disabled, no sync operations will be performed.', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -131,6 +132,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                         <p class="description"><?php printf(__('Webhook URL: %s', 'rental-sync-engine'), home_url('/rental-sync-webhook/rentals-united')); ?></p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><?php _e('Test Connection', 'rental-sync-engine'); ?></th>
+                    <td>
+                        <button type="button" class="button test-connection" data-provider="ru"><?php _e('Test Connection', 'rental-sync-engine'); ?></button>
+                        <span class="test-connection-result" id="test-result-ru"></span>
+                    </td>
+                </tr>
             </table>
         </div>
         
@@ -144,6 +152,7 @@ if (isset($_POST['rental_sync_save_settings'])) {
                             <option value="yes" <?php selected(Settings::get('rental_sync_engine_or_enabled', 'no'), 'yes'); ?>><?php _e('Yes', 'rental-sync-engine'); ?></option>
                             <option value="no" <?php selected(Settings::get('rental_sync_engine_or_enabled', 'no'), 'no'); ?>><?php _e('No', 'rental-sync-engine'); ?></option>
                         </select>
+                        <p class="description"><?php _e('Enable or disable OwnerRez integration. When disabled, no sync operations will be performed.', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -159,6 +168,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                         <p class="description"><?php printf(__('Webhook URL: %s', 'rental-sync-engine'), home_url('/rental-sync-webhook/ownerrez')); ?></p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><?php _e('Test Connection', 'rental-sync-engine'); ?></th>
+                    <td>
+                        <button type="button" class="button test-connection" data-provider="or"><?php _e('Test Connection', 'rental-sync-engine'); ?></button>
+                        <span class="test-connection-result" id="test-result-or"></span>
+                    </td>
+                </tr>
             </table>
         </div>
         
@@ -172,6 +188,7 @@ if (isset($_POST['rental_sync_save_settings'])) {
                             <option value="yes" <?php selected(Settings::get('rental_sync_engine_ul_enabled', 'no'), 'yes'); ?>><?php _e('Yes', 'rental-sync-engine'); ?></option>
                             <option value="no" <?php selected(Settings::get('rental_sync_engine_ul_enabled', 'no'), 'no'); ?>><?php _e('No', 'rental-sync-engine'); ?></option>
                         </select>
+                        <p class="description"><?php _e('Enable or disable Uplisting integration. When disabled, no sync operations will be performed.', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -187,6 +204,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                         <p class="description"><?php printf(__('Webhook URL: %s', 'rental-sync-engine'), home_url('/rental-sync-webhook/uplisting')); ?></p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><?php _e('Test Connection', 'rental-sync-engine'); ?></th>
+                    <td>
+                        <button type="button" class="button test-connection" data-provider="ul"><?php _e('Test Connection', 'rental-sync-engine'); ?></button>
+                        <span class="test-connection-result" id="test-result-ul"></span>
+                    </td>
+                </tr>
             </table>
         </div>
         
@@ -200,6 +224,7 @@ if (isset($_POST['rental_sync_save_settings'])) {
                             <option value="yes" <?php selected(Settings::get('rental_sync_engine_ha_enabled', 'no'), 'yes'); ?>><?php _e('Yes', 'rental-sync-engine'); ?></option>
                             <option value="no" <?php selected(Settings::get('rental_sync_engine_ha_enabled', 'no'), 'no'); ?>><?php _e('No', 'rental-sync-engine'); ?></option>
                         </select>
+                        <p class="description"><?php _e('Enable or disable Hostaway integration. When disabled, no sync operations will be performed.', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -219,6 +244,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                     <td>
                         <input type="text" name="rental_sync_engine_ha_webhook_secret" id="rental_sync_engine_ha_webhook_secret" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ha_webhook_secret', '')); ?>" class="regular-text" />
                         <p class="description"><?php printf(__('Webhook URL: %s', 'rental-sync-engine'), home_url('/rental-sync-webhook/hostaway')); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Test Connection', 'rental-sync-engine'); ?></th>
+                    <td>
+                        <button type="button" class="button test-connection" data-provider="ha"><?php _e('Test Connection', 'rental-sync-engine'); ?></button>
+                        <span class="test-connection-result" id="test-result-ha"></span>
                     </td>
                 </tr>
             </table>

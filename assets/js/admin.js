@@ -20,6 +20,54 @@
             $(target).addClass('active');
         });
         
+        // Test connection buttons
+        $('.test-connection').on('click', function() {
+            var $button = $(this);
+            var provider = $button.data('provider');
+            var $result = $('#test-result-' + provider);
+            
+            // Save the settings first (in memory, not to database)
+            var settings = {};
+            $('input, select').each(function() {
+                var $field = $(this);
+                var name = $field.attr('name');
+                if (name && name.indexOf(provider) !== -1) {
+                    settings[name] = $field.val();
+                }
+            });
+            
+            // Disable button and show loading
+            $button.prop('disabled', true).text('Testing...');
+            $result.removeClass('success error').text('');
+            
+            // Make AJAX request
+            $.ajax({
+                url: rentalSyncEngine.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'rental_sync_test_connection',
+                    provider: provider,
+                    nonce: rentalSyncEngine.nonce
+                },
+                success: function(response) {
+                    $button.prop('disabled', false).text('Test Connection');
+                    
+                    if (response.success) {
+                        $result.addClass('success').text('✓ ' + response.data.message);
+                        setTimeout(function() {
+                            $result.text('');
+                        }, 5000);
+                    } else {
+                        $result.addClass('error').text('✗ ' + response.data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $button.prop('disabled', false).text('Test Connection');
+                    $result.addClass('error').text('✗ Connection failed: ' + error);
+                }
+            });
+        });
+        
         // Manual sync triggers
         $('.sync-trigger').on('click', function() {
             var $button = $(this);

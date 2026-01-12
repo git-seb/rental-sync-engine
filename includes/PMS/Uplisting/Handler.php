@@ -125,10 +125,18 @@ class Handler implements PMSHandlerInterface {
     public function push_booking($order_id) {
         try {
             $order = wc_get_order($order_id);
-            if (!$order) throw new \Exception('Order not found');
+            if (!$order) {
+                Logger::error($this->provider_code, 'booking_push', 'Order not found', array('order_id' => $order_id));
+                return array('error' => 'Order not found');
+            }
             
             $booking_data = $this->map_order_to_booking($order);
             $result = $this->client->create_booking($booking_data);
+            
+            if (isset($result['error'])) {
+                Logger::error($this->provider_code, 'booking_push', $result['error'], array('order_id' => $order_id));
+                return array('error' => $result['error']);
+            }
             
             if (isset($result['id'])) {
                 $order->update_meta_data('_rental_sync_pms_booking_id', $result['id']);

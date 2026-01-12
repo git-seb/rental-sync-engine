@@ -53,7 +53,6 @@ abstract class ApiClient {
      * @param string $endpoint API endpoint
      * @param array $params Query parameters
      * @return array Response data
-     * @throws \Exception
      */
     protected function get($endpoint, $params = array()) {
         $url = $this->build_url($endpoint, $params);
@@ -69,7 +68,6 @@ abstract class ApiClient {
      * @param string $endpoint API endpoint
      * @param array $data Request body data
      * @return array Response data
-     * @throws \Exception
      */
     protected function post($endpoint, $data = array()) {
         $url = $this->build_url($endpoint);
@@ -85,7 +83,6 @@ abstract class ApiClient {
      * @param string $endpoint API endpoint
      * @param array $data Request body data
      * @return array Response data
-     * @throws \Exception
      */
     protected function put($endpoint, $data = array()) {
         $url = $this->build_url($endpoint);
@@ -100,7 +97,6 @@ abstract class ApiClient {
      *
      * @param string $endpoint API endpoint
      * @return array Response data
-     * @throws \Exception
      */
     protected function delete($endpoint) {
         $url = $this->build_url($endpoint);
@@ -168,12 +164,13 @@ abstract class ApiClient {
      *
      * @param array|\WP_Error $response WordPress HTTP response
      * @return array Response data
-     * @throws \Exception
      */
     protected function handle_response($response) {
         // Check for WP_Error
         if (is_wp_error($response)) {
-            throw new \Exception('API request failed: ' . $response->get_error_message());
+            $error_message = 'API request failed: ' . $response->get_error_message();
+            Logger::error('api_client', 'http_request', $error_message);
+            return array('error' => $error_message);
         }
         
         // Get response code
@@ -182,7 +179,9 @@ abstract class ApiClient {
         // Check for HTTP errors
         if ($code < 200 || $code >= 300) {
             $body = wp_remote_retrieve_body($response);
-            throw new \Exception('API request failed with status ' . $code . ': ' . $body);
+            $error_message = 'API request failed with status ' . $code . ': ' . $body;
+            Logger::error('api_client', 'http_request', $error_message);
+            return array('error' => $error_message, 'status_code' => $code);
         }
         
         // Update rate limit
@@ -206,7 +205,6 @@ abstract class ApiClient {
      * @param string $endpoint API endpoint
      * @param array $custom_args Custom request arguments
      * @return array Response data
-     * @throws \Exception
      */
     protected function request($method, $endpoint, $custom_args = array()) {
         // Check rate limit
@@ -239,8 +237,6 @@ abstract class ApiClient {
     
     /**
      * Check rate limit
-     *
-     * @throws \Exception
      */
     protected function check_rate_limit() {
         // Reset counter if window has passed

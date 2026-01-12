@@ -142,11 +142,19 @@ class Rental_Sync_Engine {
         // Initialize WooCommerce integration
         $this->init_class('RentalSyncEngine\Integration\WooCommerceIntegration');
         
-        // Initialize PMS handlers
-        $this->init_class('RentalSyncEngine\PMS\RentalsUnited\Handler');
-        $this->init_class('RentalSyncEngine\PMS\OwnerRez\Handler');
-        $this->init_class('RentalSyncEngine\PMS\Uplisting\Handler');
-        $this->init_class('RentalSyncEngine\PMS\Hostaway\Handler');
+        // Initialize PMS handlers only if enabled
+        if (\RentalSyncEngine\Core\Settings::is_provider_enabled('ru')) {
+            $this->init_class('RentalSyncEngine\PMS\RentalsUnited\Handler');
+        }
+        if (\RentalSyncEngine\Core\Settings::is_provider_enabled('or')) {
+            $this->init_class('RentalSyncEngine\PMS\OwnerRez\Handler');
+        }
+        if (\RentalSyncEngine\Core\Settings::is_provider_enabled('ul')) {
+            $this->init_class('RentalSyncEngine\PMS\Uplisting\Handler');
+        }
+        if (\RentalSyncEngine\Core\Settings::is_provider_enabled('ha')) {
+            $this->init_class('RentalSyncEngine\PMS\Hostaway\Handler');
+        }
     }
     
     /**
@@ -410,6 +418,11 @@ class Rental_Sync_Engine {
             'rental_sync_engine_sync_frequency' => 'hourly',
             'rental_sync_engine_log_retention_days' => 30,
             'rental_sync_engine_debug_mode' => 'no',
+            // PMS integrations disabled by default
+            'rental_sync_engine_ru_enabled' => 'no',
+            'rental_sync_engine_or_enabled' => 'no',
+            'rental_sync_engine_ul_enabled' => 'no',
+            'rental_sync_engine_ha_enabled' => 'no',
         );
         
         foreach ($defaults as $key => $value) {
