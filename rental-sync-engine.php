@@ -31,6 +31,21 @@ define('RENTAL_SYNC_ENGINE_BASENAME', plugin_basename(__FILE__));
 // Require Composer autoloader
 if (file_exists(RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php')) {
     require_once RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php';
+} else {
+    // Log error and show admin notice if autoloader is missing
+    error_log('Rental Sync Engine: Fatal Error - Composer autoloader not found. Please run: composer install --no-dev');
+    
+    add_action('admin_notices', function() {
+        ?>
+        <div class="notice notice-error">
+            <p><strong><?php _e('Rental Sync Engine Error:', 'rental-sync-engine'); ?></strong> 
+            <?php _e('Composer dependencies are missing. Please run <code>composer install --no-dev</code> in the plugin directory.', 'rental-sync-engine'); ?></p>
+        </div>
+        <?php
+    });
+    
+    // Don't initialize the plugin if autoloader is missing
+    return;
 }
 
 // Declare HPOS compatibility
@@ -96,6 +111,22 @@ class Rental_Sync_Engine {
     }
     
     /**
+     * Initialize a component class if it exists
+     *
+     * @param string $class_name Fully qualified class name
+     * @return bool True if class was initialized, false otherwise
+     */
+    private function init_class($class_name) {
+        if (class_exists($class_name)) {
+            $class_name::init();
+            return true;
+        } else {
+            error_log("Rental Sync Engine: Fatal Error - Missing class {$class_name}. Please run composer install.");
+            return false;
+        }
+    }
+    
+    /**
      * Initialize WordPress hooks
      */
     private function init_hooks() {
@@ -113,26 +144,26 @@ class Rental_Sync_Engine {
      * Initialize plugin components
      */
     private function init_components() {
-        // Initialize logger
-        \RentalSyncEngine\Core\Logger::init();
+        // Initialize logger with fallback error handling
+        $this->init_class('RentalSyncEngine\Core\Logger');
         
-        // Initialize settings
-        \RentalSyncEngine\Core\Settings::init();
+        // Initialize settings - critical component
+        if (!$this->init_class('RentalSyncEngine\Core\Settings')) {
+            return; // Settings is critical, stop initialization if missing
+        }
         
-        // Initialize webhook router
-        \RentalSyncEngine\Core\WebhookRouter::init();
-        
-        // Initialize sync scheduler
-        \RentalSyncEngine\Core\SyncScheduler::init();
+        // Initialize other core components
+        $this->init_class('RentalSyncEngine\Core\WebhookRouter');
+        $this->init_class('RentalSyncEngine\Core\SyncScheduler');
         
         // Initialize WooCommerce integration
-        \RentalSyncEngine\Integration\WooCommerceIntegration::init();
+        $this->init_class('RentalSyncEngine\Integration\WooCommerceIntegration');
         
         // Initialize PMS handlers
-        \RentalSyncEngine\PMS\RentalsUnited\Handler::init();
-        \RentalSyncEngine\PMS\OwnerRez\Handler::init();
-        \RentalSyncEngine\PMS\Uplisting\Handler::init();
-        \RentalSyncEngine\PMS\Hostaway\Handler::init();
+        $this->init_class('RentalSyncEngine\PMS\RentalsUnited\Handler');
+        $this->init_class('RentalSyncEngine\PMS\OwnerRez\Handler');
+        $this->init_class('RentalSyncEngine\PMS\Uplisting\Handler');
+        $this->init_class('RentalSyncEngine\PMS\Hostaway\Handler');
     }
     
     /**
