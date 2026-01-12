@@ -31,6 +31,21 @@ define('RENTAL_SYNC_ENGINE_BASENAME', plugin_basename(__FILE__));
 // Require Composer autoloader
 if (file_exists(RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php')) {
     require_once RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php';
+} else {
+    // Log error and show admin notice if autoloader is missing
+    error_log('Rental Sync Engine: Fatal Error - Composer autoloader not found. Please run: composer install --no-dev');
+    
+    add_action('admin_notices', function() {
+        ?>
+        <div class="notice notice-error">
+            <p><strong><?php _e('Rental Sync Engine Error:', 'rental-sync-engine'); ?></strong> 
+            <?php _e('Composer dependencies are missing. Please run <code>composer install --no-dev</code> in the plugin directory.', 'rental-sync-engine'); ?></p>
+        </div>
+        <?php
+    });
+    
+    // Don't initialize the plugin if autoloader is missing
+    return;
 }
 
 // Declare HPOS compatibility
@@ -113,26 +128,66 @@ class Rental_Sync_Engine {
      * Initialize plugin components
      */
     private function init_components() {
-        // Initialize logger
-        \RentalSyncEngine\Core\Logger::init();
+        // Initialize logger with fallback error handling
+        if (class_exists('RentalSyncEngine\Core\Logger')) {
+            \RentalSyncEngine\Core\Logger::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\Core\Logger. Please run composer install.');
+        }
         
-        // Initialize settings
-        \RentalSyncEngine\Core\Settings::init();
+        // Initialize settings with fallback error handling
+        if (class_exists('RentalSyncEngine\Core\Settings')) {
+            \RentalSyncEngine\Core\Settings::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\Core\Settings. Please run composer install.');
+            return;
+        }
         
-        // Initialize webhook router
-        \RentalSyncEngine\Core\WebhookRouter::init();
+        // Initialize webhook router with fallback error handling
+        if (class_exists('RentalSyncEngine\Core\WebhookRouter')) {
+            \RentalSyncEngine\Core\WebhookRouter::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\Core\WebhookRouter. Please run composer install.');
+        }
         
-        // Initialize sync scheduler
-        \RentalSyncEngine\Core\SyncScheduler::init();
+        // Initialize sync scheduler with fallback error handling
+        if (class_exists('RentalSyncEngine\Core\SyncScheduler')) {
+            \RentalSyncEngine\Core\SyncScheduler::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\Core\SyncScheduler. Please run composer install.');
+        }
         
-        // Initialize WooCommerce integration
-        \RentalSyncEngine\Integration\WooCommerceIntegration::init();
+        // Initialize WooCommerce integration with fallback error handling
+        if (class_exists('RentalSyncEngine\Integration\WooCommerceIntegration')) {
+            \RentalSyncEngine\Integration\WooCommerceIntegration::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\Integration\WooCommerceIntegration. Please run composer install.');
+        }
         
-        // Initialize PMS handlers
-        \RentalSyncEngine\PMS\RentalsUnited\Handler::init();
-        \RentalSyncEngine\PMS\OwnerRez\Handler::init();
-        \RentalSyncEngine\PMS\Uplisting\Handler::init();
-        \RentalSyncEngine\PMS\Hostaway\Handler::init();
+        // Initialize PMS handlers with fallback error handling
+        if (class_exists('RentalSyncEngine\PMS\RentalsUnited\Handler')) {
+            \RentalSyncEngine\PMS\RentalsUnited\Handler::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\PMS\RentalsUnited\Handler. Please run composer install.');
+        }
+        
+        if (class_exists('RentalSyncEngine\PMS\OwnerRez\Handler')) {
+            \RentalSyncEngine\PMS\OwnerRez\Handler::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\PMS\OwnerRez\Handler. Please run composer install.');
+        }
+        
+        if (class_exists('RentalSyncEngine\PMS\Uplisting\Handler')) {
+            \RentalSyncEngine\PMS\Uplisting\Handler::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\PMS\Uplisting\Handler. Please run composer install.');
+        }
+        
+        if (class_exists('RentalSyncEngine\PMS\Hostaway\Handler')) {
+            \RentalSyncEngine\PMS\Hostaway\Handler::init();
+        } else {
+            error_log('Rental Sync Engine: Fatal Error - Missing class RentalSyncEngine\PMS\Hostaway\Handler. Please run composer install.');
+        }
     }
     
     /**
