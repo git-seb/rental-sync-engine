@@ -118,6 +118,7 @@ class Settings {
         // Validate URL is reachable (only warn, don't block saving)
         self::validate_api_url($url);
         
+        // Remove trailing slash for consistency - ApiClient's build_url() will add it when needed
         return rtrim($url, '/');
     }
     
@@ -144,7 +145,8 @@ class Settings {
         
         $code = wp_remote_retrieve_response_code($response);
         
-        // Accept 2xx, 3xx, 401, and 403 as valid (401/403 means API exists but needs auth)
+        // Accept 2xx (success), 3xx (redirect - API may redirect to canonical URL),
+        // 401/403 (auth required - means API exists but needs credentials)
         if (($code >= 200 && $code < 400) || $code === 401 || $code === 403) {
             self::add_admin_notice(__('API URL validated successfully.', 'rental-sync-engine'), 'success');
             return true;
