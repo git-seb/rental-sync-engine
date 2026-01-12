@@ -24,16 +24,20 @@ if (isset($_POST['rental_sync_save_settings'])) {
         'rental_sync_engine_ru_username',
         'rental_sync_engine_ru_password',
         'rental_sync_engine_ru_webhook_secret',
+        'rental_sync_engine_ru_api_url',
         'rental_sync_engine_or_enabled',
         'rental_sync_engine_or_api_token',
         'rental_sync_engine_or_webhook_secret',
+        'rental_sync_engine_or_api_url',
         'rental_sync_engine_ul_enabled',
         'rental_sync_engine_ul_api_key',
         'rental_sync_engine_ul_webhook_secret',
+        'rental_sync_engine_ul_api_url',
         'rental_sync_engine_ha_enabled',
         'rental_sync_engine_ha_client_id',
         'rental_sync_engine_ha_client_secret',
         'rental_sync_engine_ha_webhook_secret',
+        'rental_sync_engine_ha_api_url',
     );
     
     foreach ($settings_to_save as $setting) {
@@ -126,6 +130,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                     </td>
                 </tr>
                 <tr>
+                    <th scope="row"><label for="rental_sync_engine_ru_api_url"><?php _e('API URL', 'rental-sync-engine'); ?></label></th>
+                    <td>
+                        <input type="text" name="rental_sync_engine_ru_api_url" id="rental_sync_engine_ru_api_url" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ru_api_url', 'https://rm.rentalsunited.com/api')); ?>" class="regular-text" />
+                        <p class="description"><?php _e('Default: https://rm.rentalsunited.com/api', 'rental-sync-engine'); ?></p>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row"><label for="rental_sync_engine_ru_webhook_secret"><?php _e('Webhook Secret', 'rental-sync-engine'); ?></label></th>
                     <td>
                         <input type="text" name="rental_sync_engine_ru_webhook_secret" id="rental_sync_engine_ru_webhook_secret" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ru_webhook_secret', '')); ?>" class="regular-text" />
@@ -162,6 +173,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                     </td>
                 </tr>
                 <tr>
+                    <th scope="row"><label for="rental_sync_engine_or_api_url"><?php _e('API URL', 'rental-sync-engine'); ?></label></th>
+                    <td>
+                        <input type="text" name="rental_sync_engine_or_api_url" id="rental_sync_engine_or_api_url" value="<?php echo esc_attr(Settings::get('rental_sync_engine_or_api_url', 'https://api.ownerrez.com/v2')); ?>" class="regular-text" />
+                        <p class="description"><?php _e('Default: https://api.ownerrez.com/v2', 'rental-sync-engine'); ?></p>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row"><label for="rental_sync_engine_or_webhook_secret"><?php _e('Webhook Secret', 'rental-sync-engine'); ?></label></th>
                     <td>
                         <input type="text" name="rental_sync_engine_or_webhook_secret" id="rental_sync_engine_or_webhook_secret" value="<?php echo esc_attr(Settings::get('rental_sync_engine_or_webhook_secret', '')); ?>" class="regular-text" />
@@ -195,6 +213,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                     <th scope="row"><label for="rental_sync_engine_ul_api_key"><?php _e('API Key', 'rental-sync-engine'); ?></label></th>
                     <td>
                         <input type="text" name="rental_sync_engine_ul_api_key" id="rental_sync_engine_ul_api_key" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ul_api_key', '')); ?>" class="regular-text" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="rental_sync_engine_ul_api_url"><?php _e('API URL', 'rental-sync-engine'); ?></label></th>
+                    <td>
+                        <input type="text" name="rental_sync_engine_ul_api_url" id="rental_sync_engine_ul_api_url" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ul_api_url', 'https://api.uplisting.io/v1')); ?>" class="regular-text" />
+                        <p class="description"><?php _e('Default: https://api.uplisting.io/v1', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -237,6 +262,13 @@ if (isset($_POST['rental_sync_save_settings'])) {
                     <th scope="row"><label for="rental_sync_engine_ha_client_secret"><?php _e('Client Secret', 'rental-sync-engine'); ?></label></th>
                     <td>
                         <input type="password" name="rental_sync_engine_ha_client_secret" id="rental_sync_engine_ha_client_secret" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ha_client_secret', '')); ?>" class="regular-text" />
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="rental_sync_engine_ha_api_url"><?php _e('API URL', 'rental-sync-engine'); ?></label></th>
+                    <td>
+                        <input type="text" name="rental_sync_engine_ha_api_url" id="rental_sync_engine_ha_api_url" value="<?php echo esc_attr(Settings::get('rental_sync_engine_ha_api_url', 'https://api.hostaway.com/v1')); ?>" class="regular-text" />
+                        <p class="description"><?php _e('Default: https://api.hostaway.com/v1', 'rental-sync-engine'); ?></p>
                     </td>
                 </tr>
                 <tr>

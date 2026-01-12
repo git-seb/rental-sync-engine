@@ -36,22 +36,34 @@ class Settings {
         register_setting('rental_sync_engine_rentals_united', 'rental_sync_engine_ru_username');
         register_setting('rental_sync_engine_rentals_united', 'rental_sync_engine_ru_password');
         register_setting('rental_sync_engine_rentals_united', 'rental_sync_engine_ru_webhook_secret');
+        register_setting('rental_sync_engine_rentals_united', 'rental_sync_engine_ru_api_url', array(
+            'sanitize_callback' => array(__CLASS__, 'sanitize_api_url')
+        ));
         
         // OwnerRez settings
         register_setting('rental_sync_engine_ownerrez', 'rental_sync_engine_or_enabled');
         register_setting('rental_sync_engine_ownerrez', 'rental_sync_engine_or_api_token');
         register_setting('rental_sync_engine_ownerrez', 'rental_sync_engine_or_webhook_secret');
+        register_setting('rental_sync_engine_ownerrez', 'rental_sync_engine_or_api_url', array(
+            'sanitize_callback' => array(__CLASS__, 'sanitize_api_url')
+        ));
         
         // Uplisting settings
         register_setting('rental_sync_engine_uplisting', 'rental_sync_engine_ul_enabled');
         register_setting('rental_sync_engine_uplisting', 'rental_sync_engine_ul_api_key');
         register_setting('rental_sync_engine_uplisting', 'rental_sync_engine_ul_webhook_secret');
+        register_setting('rental_sync_engine_uplisting', 'rental_sync_engine_ul_api_url', array(
+            'sanitize_callback' => array(__CLASS__, 'sanitize_api_url')
+        ));
         
         // Hostaway settings
         register_setting('rental_sync_engine_hostaway', 'rental_sync_engine_ha_enabled');
         register_setting('rental_sync_engine_hostaway', 'rental_sync_engine_ha_client_id');
         register_setting('rental_sync_engine_hostaway', 'rental_sync_engine_ha_client_secret');
         register_setting('rental_sync_engine_hostaway', 'rental_sync_engine_ha_webhook_secret');
+        register_setting('rental_sync_engine_hostaway', 'rental_sync_engine_ha_api_url', array(
+            'sanitize_callback' => array(__CLASS__, 'sanitize_api_url')
+        ));
     }
     
     /**
@@ -78,6 +90,96 @@ class Settings {
     }
     
     /**
+     * Sanitize API URL
+     *
+     * @param string $url API URL to sanitize
+     * @return string Sanitized URL
+     */
+    public static function sanitize_api_url($url) {
+        $url = sanitize_text_field($url);
+        
+        // If empty, return empty (will use default)
+        if (empty($url)) {
+            return '';
+        }
+        
+        // Validate URL format
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            self::add_admin_notice(__('Invalid API URL format. Please enter a valid URL.', 'rental-sync-engine'), 'error');
+            return '';
+        }
+        
+        // Ensure URL uses HTTPS for security
+        if (strpos($url, 'https://') !== 0) {
+            self::add_admin_notice(__('API URL must use HTTPS for security. URL was not saved.', 'rental-sync-engine'), 'error');
+            return '';
+        }
+        
+        // Validate URL is reachable
+        $provider_key = self::get_provider_key_from_url_option();
+        if ($provider_key && self::get($provider_key . '_enabled') === 'yes') {
+            self::validate_api_url($url);
+        }
+        
+        return rtrim($url, '/');
+    }
+    
+    /**
+     * Get provider key from the current URL option being saved
+     *
+     * @return string|null Provider key or null
+     */
+    private static function get_provider_key_from_url_option() {
+        // Check which API URL is being saved from the POST data
+        if (isset($_POST['rental_sync_engine_ru_api_url'])) {
+            return 'rental_sync_engine_ru';
+        } elseif (isset($_POST['rental_sync_engine_or_api_url'])) {
+            return 'rental_sync_engine_or';
+        } elseif (isset($_POST['rental_sync_engine_ul_api_url'])) {
+            return 'rental_sync_engine_ul';
+        } elseif (isset($_POST['rental_sync_engine_ha_api_url'])) {
+            return 'rental_sync_engine_ha';
+        }
+        return null;
+    }
+    
+    /**
+     * Validate API URL by making a test request
+     *
+     * @param string $url API URL to validate
+     * @return bool True if valid, false otherwise
+     */
+    public static function validate_api_url($url) {
+        // Make a simple HEAD request to check if the URL is reachable
+        $response = wp_remote_head($url, array(
+            'timeout' => 10,
+            'sslverify' => true,
+        ));
+        
+        if (is_wp_error($response)) {
+            self::add_admin_notice(
+                sprintf(__('Warning: Could not reach API URL: %s. Please verify the URL is correct.', 'rental-sync-engine'), $response->get_error_message()),
+                'warning'
+            );
+            return false;
+        }
+        
+        $code = wp_remote_retrieve_response_code($response);
+        
+        // Accept 2xx, 3xx, 401, and 403 as valid (401/403 means API exists but needs auth)
+        if (($code >= 200 && $code < 400) || $code === 401 || $code === 403) {
+            self::add_admin_notice(__('API URL validated successfully.', 'rental-sync-engine'), 'success');
+            return true;
+        }
+        
+        self::add_admin_notice(
+            sprintf(__('Warning: API URL returned status code %d. Please verify the URL is correct.', 'rental-sync-engine'), $code),
+            'warning'
+        );
+        return false;
+    }
+    
+    /**
      * Check if a PMS provider is enabled
      *
      * @param string $provider Provider name (ru, or, ul, ha)
@@ -86,6 +188,25 @@ class Settings {
     public static function is_provider_enabled($provider) {
         $key = 'rental_sync_engine_' . $provider . '_enabled';
         return self::get($key, 'no') === 'yes';
+    }
+    
+    /**
+     * Get API URL for a provider
+     *
+     * @param string $provider Provider name (ru, or, ul, ha)
+     * @param string $default Default URL
+     * @return string API URL
+     */
+    public static function get_api_url($provider, $default = '') {
+        $key = 'rental_sync_engine_' . $provider . '_api_url';
+        $url = self::get($key, '');
+        
+        // If no custom URL is set, use the default
+        if (empty($url)) {
+            return $default;
+        }
+        
+        return $url;
     }
     
     /**

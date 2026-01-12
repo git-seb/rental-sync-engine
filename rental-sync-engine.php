@@ -423,6 +423,11 @@ class Rental_Sync_Engine {
             'rental_sync_engine_or_enabled' => 'no',
             'rental_sync_engine_ul_enabled' => 'no',
             'rental_sync_engine_ha_enabled' => 'no',
+            // Default API URLs for each PMS
+            'rental_sync_engine_ru_api_url' => 'https://rm.rentalsunited.com/api',
+            'rental_sync_engine_or_api_url' => 'https://api.ownerrez.com/v2',
+            'rental_sync_engine_ul_api_url' => 'https://api.uplisting.io/v1',
+            'rental_sync_engine_ha_api_url' => 'https://api.hostaway.com/v1',
         );
         
         foreach ($defaults as $key => $value) {
