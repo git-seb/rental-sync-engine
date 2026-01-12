@@ -133,7 +133,8 @@ class WooCommerceIntegration {
             $product_id = self::get_product_id_by_property($pms_provider, $booking_data['property_id']);
             
             if (!$product_id) {
-                throw new \Exception('Product not found for property: ' . $booking_data['property_id']);
+                Logger::error($pms_provider, 'booking_sync', 'Product not found for property: ' . $booking_data['property_id'], $booking_data);
+                return false;
             }
             
             // Create order

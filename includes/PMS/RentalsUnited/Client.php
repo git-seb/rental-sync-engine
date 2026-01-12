@@ -79,13 +79,17 @@ class Client extends ApiClient {
             $response = wp_remote_post($url, $args);
             
             if (is_wp_error($response)) {
-                throw new \Exception('Failed to get properties: ' . $response->get_error_message());
+                $error_message = 'Failed to get properties: ' . $response->get_error_message();
+                \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+                return array('error' => $error_message);
             }
             
             $body = wp_remote_retrieve_body($response);
             return $this->parse_xml_response($body);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to get properties: ' . $e->getMessage());
+            $error_message = 'Failed to get properties: ' . $e->getMessage();
+            \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+            return array('error' => $error_message);
         }
     }
     
@@ -118,13 +122,17 @@ class Client extends ApiClient {
             $response = wp_remote_post($url, $args);
             
             if (is_wp_error($response)) {
-                throw new \Exception('Failed to get property: ' . $response->get_error_message());
+                $error_message = 'Failed to get property: ' . $response->get_error_message();
+                \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+                return array('error' => $error_message);
             }
             
             $body = wp_remote_retrieve_body($response);
             return $this->parse_xml_response($body);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to get property: ' . $e->getMessage());
+            $error_message = 'Failed to get property: ' . $e->getMessage();
+            \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+            return array('error' => $error_message);
         }
     }
     
@@ -161,13 +169,17 @@ class Client extends ApiClient {
             $response = wp_remote_post($url, $args);
             
             if (is_wp_error($response)) {
-                throw new \Exception('Failed to get availability: ' . $response->get_error_message());
+                $error_message = 'Failed to get availability: ' . $response->get_error_message();
+                \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+                return array('error' => $error_message);
             }
             
             $body = wp_remote_retrieve_body($response);
             return $this->parse_xml_response($body);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to get availability: ' . $e->getMessage());
+            $error_message = 'Failed to get availability: ' . $e->getMessage();
+            \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+            return array('error' => $error_message);
         }
     }
     
@@ -202,13 +214,17 @@ class Client extends ApiClient {
             $response = wp_remote_post($url, $args);
             
             if (is_wp_error($response)) {
-                throw new \Exception('Failed to get reservations: ' . $response->get_error_message());
+                $error_message = 'Failed to get reservations: ' . $response->get_error_message();
+                \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+                return array('error' => $error_message);
             }
             
             $body = wp_remote_retrieve_body($response);
             return $this->parse_xml_response($body);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to get reservations: ' . $e->getMessage());
+            $error_message = 'Failed to get reservations: ' . $e->getMessage();
+            \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+            return array('error' => $error_message);
         }
     }
     
@@ -234,13 +250,17 @@ class Client extends ApiClient {
             $response = wp_remote_post($url, $args);
             
             if (is_wp_error($response)) {
-                throw new \Exception('Failed to create reservation: ' . $response->get_error_message());
+                $error_message = 'Failed to create reservation: ' . $response->get_error_message();
+                \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+                return array('error' => $error_message);
             }
             
             $body = wp_remote_retrieve_body($response);
             return $this->parse_xml_response($body);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to create reservation: ' . $e->getMessage());
+            $error_message = 'Failed to create reservation: ' . $e->getMessage();
+            \RentalSyncEngine\Core\Logger::error('ru', 'api_request', $error_message);
+            return array('error' => $error_message);
         }
     }
     

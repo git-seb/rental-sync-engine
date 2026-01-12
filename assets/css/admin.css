@@ -215,3 +215,17 @@
         transform: rotate(360deg);
     }
 }
+
+/* Test Connection Results */
+.test-connection-result {
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.test-connection-result.success {
+    color: #00a32a;
+}
+
+.test-connection-result.error {
+    color: #d63638;
+}

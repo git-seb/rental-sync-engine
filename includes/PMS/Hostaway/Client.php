@@ -27,15 +27,33 @@ class Client extends ApiClient {
     
     private function authenticate() {
         try {
+            if (empty($this->client_id) || empty($this->client_secret)) {
+                Logger::error('ha', 'authentication', 'Missing client credentials');
+                $this->access_token = '';
+                return;
+            }
+            
             $response = $this->post('accessTokens', array(
                 'grant_type' => 'client_credentials',
                 'client_id' => $this->client_id,
                 'client_secret' => $this->client_secret,
                 'scope' => 'general'
             ));
+            
+            if (isset($response['error'])) {
+                Logger::error('ha', 'authentication', 'Authentication failed: ' . $response['error']);
+                $this->access_token = '';
+                return;
+            }
+            
             $this->access_token = $response['access_token'] ?? '';
+            
+            if (empty($this->access_token)) {
+                Logger::error('ha', 'authentication', 'No access token in response');
+            }
         } catch (\Exception $e) {
-            throw new \Exception('Authentication failed: ' . $e->getMessage());
+            Logger::error('ha', 'authentication', 'Authentication exception: ' . $e->getMessage());
+            $this->access_token = '';
         }
     }
     

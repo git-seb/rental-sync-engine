@@ -74,6 +74,12 @@ class Handler implements PMSHandlerInterface {
     public function sync_properties() {
         try {
             $properties = $this->client->get_properties();
+            
+            if (isset($properties['error'])) {
+                Logger::error($this->provider_code, 'property_sync', $properties['error']);
+                return array('error' => $properties['error']);
+            }
+            
             $results = array(
                 'success' => 0,
                 'failed' => 0,
@@ -92,6 +98,13 @@ class Handler implements PMSHandlerInterface {
                     try {
                         // Get full property details
                         $property_details = $this->client->get_property($property['ID']);
+                        
+                        if (isset($property_details['error'])) {
+                            $results['failed']++;
+                            $results['errors'][] = $property_details['error'];
+                            Logger::error($this->provider_code, 'property_sync', $property_details['error'], $property);
+                            continue;
+                        }
                         
                         // Map property data
                         $property_data = $this->map_property_data($property_details);
@@ -232,7 +245,8 @@ class Handler implements PMSHandlerInterface {
             $order = wc_get_order($order_id);
             
             if (!$order) {
-                throw new \Exception('Order not found');
+                Logger::error($this->provider_code, 'booking_push', 'Order not found', array('order_id' => $order_id));
+                return array('error' => 'Order not found');
             }
             
             // Get booking data from order
@@ -240,6 +254,11 @@ class Handler implements PMSHandlerInterface {
             
             // Create reservation in PMS
             $result = $this->client->create_reservation($booking_data);
+            
+            if (isset($result['error'])) {
+                Logger::error($this->provider_code, 'booking_push', $result['error'], array('order_id' => $order_id));
+                return array('error' => $result['error']);
+            }
             
             // Update order meta with PMS booking ID
             if (isset($result['ReservationID'])) {
