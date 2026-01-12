@@ -26,7 +26,8 @@ class Client extends ApiClient {
      * Constructor
      */
     public function __construct() {
-        parent::__construct('https://api.ownerrez.com/v2/');
+        $api_url = Settings::get_api_url('or', 'https://api.ownerrez.com/v2');
+        parent::__construct($api_url);
         
         $credentials = Settings::get_provider_credentials('or');
         $this->api_token = $credentials['api_token'] ?? '';

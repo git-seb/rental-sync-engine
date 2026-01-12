@@ -10,7 +10,8 @@ class Client extends ApiClient {
     private $access_token;
     
     public function __construct() {
-        parent::__construct('https://api.hostaway.com/v1/');
+        $api_url = Settings::get_api_url('ha', 'https://api.hostaway.com/v1');
+        parent::__construct($api_url);
         $credentials = Settings::get_provider_credentials('ha');
         $this->client_id = $credentials['client_id'] ?? '';
         $this->client_secret = $credentials['client_secret'] ?? '';

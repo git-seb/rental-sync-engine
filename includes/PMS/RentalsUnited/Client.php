@@ -33,7 +33,8 @@ class Client extends ApiClient {
      * Constructor
      */
     public function __construct() {
-        parent::__construct('https://rm.rentalsunited.com/api/');
+        $api_url = Settings::get_api_url('ru', 'https://rm.rentalsunited.com/api');
+        parent::__construct($api_url);
         
         $credentials = Settings::get_provider_credentials('ru');
         $this->username = $credentials['username'] ?? '';

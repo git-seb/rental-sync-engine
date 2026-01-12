@@ -8,7 +8,8 @@ class Client extends ApiClient {
     private $api_key;
     
     public function __construct() {
-        parent::__construct('https://api.uplisting.io/v1/');
+        $api_url = Settings::get_api_url('ul', 'https://api.uplisting.io/v1');
+        parent::__construct($api_url);
         $credentials = Settings::get_provider_credentials('ul');
         $this->api_key = $credentials['api_key'] ?? '';
     }
