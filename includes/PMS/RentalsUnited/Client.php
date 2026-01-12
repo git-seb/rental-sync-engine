@@ -67,12 +67,23 @@ class Client extends ApiClient {
         </Pull_ListOwnerProp_RQ>';
         
         try {
-            $response = $this->client->request('POST', 'Handler.ashx', array(
+            $url = $this->base_url . '/Handler.ashx';
+            $args = array(
+                'method' => 'POST',
                 'headers' => array('Content-Type' => 'application/xml'),
-                'body' => $xml
-            ));
+                'body' => $xml,
+                'timeout' => $this->timeout,
+                'sslverify' => true,
+            );
             
-            return $this->parse_xml_response($response->getBody()->getContents());
+            $response = wp_remote_post($url, $args);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception('Failed to get properties: ' . $response->get_error_message());
+            }
+            
+            $body = wp_remote_retrieve_body($response);
+            return $this->parse_xml_response($body);
         } catch (\Exception $e) {
             throw new \Exception('Failed to get properties: ' . $e->getMessage());
         }
@@ -95,12 +106,23 @@ class Client extends ApiClient {
         </Pull_GetProp_RQ>';
         
         try {
-            $response = $this->client->request('POST', 'Handler.ashx', array(
+            $url = $this->base_url . '/Handler.ashx';
+            $args = array(
+                'method' => 'POST',
                 'headers' => array('Content-Type' => 'application/xml'),
-                'body' => $xml
-            ));
+                'body' => $xml,
+                'timeout' => $this->timeout,
+                'sslverify' => true,
+            );
             
-            return $this->parse_xml_response($response->getBody()->getContents());
+            $response = wp_remote_post($url, $args);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception('Failed to get property: ' . $response->get_error_message());
+            }
+            
+            $body = wp_remote_retrieve_body($response);
+            return $this->parse_xml_response($body);
         } catch (\Exception $e) {
             throw new \Exception('Failed to get property: ' . $e->getMessage());
         }
@@ -127,12 +149,23 @@ class Client extends ApiClient {
         </Pull_GetPropertyAvbCalendar_RQ>';
         
         try {
-            $response = $this->client->request('POST', 'Handler.ashx', array(
+            $url = $this->base_url . '/Handler.ashx';
+            $args = array(
+                'method' => 'POST',
                 'headers' => array('Content-Type' => 'application/xml'),
-                'body' => $xml
-            ));
+                'body' => $xml,
+                'timeout' => $this->timeout,
+                'sslverify' => true,
+            );
             
-            return $this->parse_xml_response($response->getBody()->getContents());
+            $response = wp_remote_post($url, $args);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception('Failed to get availability: ' . $response->get_error_message());
+            }
+            
+            $body = wp_remote_retrieve_body($response);
+            return $this->parse_xml_response($body);
         } catch (\Exception $e) {
             throw new \Exception('Failed to get availability: ' . $e->getMessage());
         }
@@ -157,12 +190,23 @@ class Client extends ApiClient {
         </Pull_ListReservations_RQ>';
         
         try {
-            $response = $this->client->request('POST', 'Handler.ashx', array(
+            $url = $this->base_url . '/Handler.ashx';
+            $args = array(
+                'method' => 'POST',
                 'headers' => array('Content-Type' => 'application/xml'),
-                'body' => $xml
-            ));
+                'body' => $xml,
+                'timeout' => $this->timeout,
+                'sslverify' => true,
+            );
             
-            return $this->parse_xml_response($response->getBody()->getContents());
+            $response = wp_remote_post($url, $args);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception('Failed to get reservations: ' . $response->get_error_message());
+            }
+            
+            $body = wp_remote_retrieve_body($response);
+            return $this->parse_xml_response($body);
         } catch (\Exception $e) {
             throw new \Exception('Failed to get reservations: ' . $e->getMessage());
         }
@@ -178,12 +222,23 @@ class Client extends ApiClient {
         $xml = $this->build_reservation_xml($booking_data);
         
         try {
-            $response = $this->client->request('POST', 'Handler.ashx', array(
+            $url = $this->base_url . '/Handler.ashx';
+            $args = array(
+                'method' => 'POST',
                 'headers' => array('Content-Type' => 'application/xml'),
-                'body' => $xml
-            ));
+                'body' => $xml,
+                'timeout' => $this->timeout,
+                'sslverify' => true,
+            );
             
-            return $this->parse_xml_response($response->getBody()->getContents());
+            $response = wp_remote_post($url, $args);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception('Failed to create reservation: ' . $response->get_error_message());
+            }
+            
+            $body = wp_remote_retrieve_body($response);
+            return $this->parse_xml_response($body);
         } catch (\Exception $e) {
             throw new \Exception('Failed to create reservation: ' . $e->getMessage());
         }

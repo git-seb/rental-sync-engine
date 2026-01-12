@@ -20,7 +20,7 @@ A robust WordPress plugin for synchronizing rental properties with multiple Prop
   - Settings page for API credentials
   - Sync logs viewer with filtering
   - Manual sync triggers
-- **PSR-4 Architecture**: Modular, maintainable code structure
+- **Self-Contained**: No external dependencies required - works out of the box
 - **Error Handling**: Comprehensive logging and retry mechanisms
 - **Rate Limiting**: Built-in API rate limit management
 
@@ -29,7 +29,6 @@ A robust WordPress plugin for synchronizing rental properties with multiple Prop
 - WordPress 5.8 or higher
 - WooCommerce 5.0 or higher
 - PHP 7.4 or higher
-- Composer (for dependency management)
 
 ## Installation
 
@@ -39,14 +38,9 @@ git clone https://github.com/git-seb/rental-sync-engine.git
 cd rental-sync-engine
 ```
 
-2. Install dependencies:
-```bash
-composer install
-```
+2. Upload the plugin folder to your WordPress `/wp-content/plugins/` directory
 
-3. Upload the plugin folder to your WordPress `/wp-content/plugins/` directory
-
-4. Activate the plugin through the 'Plugins' menu in WordPress
+3. Activate the plugin through the 'Plugins' menu in WordPress
 
 5. Navigate to **Rental Sync > Settings** to configure your PMS API credentials
 

@@ -7,7 +7,6 @@ Before installing the Rental Sync Engine plugin, ensure your environment meets t
 - **WordPress**: Version 5.8 or higher
 - **WooCommerce**: Version 5.0 or higher
 - **PHP**: Version 7.4 or higher
-- **Composer**: For dependency management (if installing from source)
 - **Database**: MySQL 5.6+ or MariaDB 10.0+
 
 ## Installation Steps
@@ -17,21 +16,15 @@ Before installing the Rental Sync Engine plugin, ensure your environment meets t
 1. **Download the plugin**
    - Clone or download from: https://github.com/git-seb/rental-sync-engine
 
-2. **Install Composer dependencies**
-   ```bash
-   cd rental-sync-engine
-   composer install --no-dev
-   ```
-
-3. **Upload to WordPress**
+2. **Upload to WordPress**
    - Copy the entire `rental-sync-engine` folder to `/wp-content/plugins/`
    - Or upload as a ZIP file through WordPress admin
 
-4. **Activate the plugin**
+3. **Activate the plugin**
    - Go to WordPress Admin → Plugins
    - Find "Rental Sync Engine" and click "Activate"
 
-5. **Verify activation**
+4. **Verify activation**
    - Check for "Rental Sync" menu item in WordPress admin
    - Confirm database tables were created
 
@@ -40,8 +33,6 @@ Before installing the Rental Sync Engine plugin, ensure your environment meets t
 ```bash
 cd /path/to/wordpress/wp-content/plugins/
 git clone https://github.com/git-seb/rental-sync-engine.git
-cd rental-sync-engine
-composer install --no-dev
 ```
 
 Then activate through WordPress admin.
@@ -176,7 +167,7 @@ The plugin automatically schedules periodic syncs:
 - **Solution**: 
   - Check WooCommerce is installed and active
   - Verify PHP version is 7.4+
-  - Run `composer install` in plugin directory
+  - Check PHP error logs for specific errors
 
 ### No Sync Activity
 - **Issue**: Sync doesn't start

@@ -28,25 +28,8 @@ define('RENTAL_SYNC_ENGINE_PATH', plugin_dir_path(__FILE__));
 define('RENTAL_SYNC_ENGINE_URL', plugin_dir_url(__FILE__));
 define('RENTAL_SYNC_ENGINE_BASENAME', plugin_basename(__FILE__));
 
-// Require Composer autoloader
-if (file_exists(RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php')) {
-    require_once RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php';
-} else {
-    // Log error and show admin notice if autoloader is missing
-    error_log('Rental Sync Engine: Fatal Error - Composer autoloader not found. Please run: composer install --no-dev');
-    
-    add_action('admin_notices', function() {
-        ?>
-        <div class="notice notice-error">
-            <p><strong><?php _e('Rental Sync Engine Error:', 'rental-sync-engine'); ?></strong> 
-            <?php _e('Composer dependencies are missing. Please run <code>composer install --no-dev</code> in the plugin directory.', 'rental-sync-engine'); ?></p>
-        </div>
-        <?php
-    });
-    
-    // Don't initialize the plugin if autoloader is missing
-    return;
-}
+// Require manual autoloader
+require_once RENTAL_SYNC_ENGINE_PATH . 'includes/autoload.php';
 
 // Declare HPOS compatibility
 add_action('before_woocommerce_init', function () {
@@ -121,7 +104,7 @@ class Rental_Sync_Engine {
             $class_name::init();
             return true;
         } else {
-            error_log("Rental Sync Engine: Fatal Error - Missing class {$class_name}. Please run composer install.");
+            error_log("Rental Sync Engine: Fatal Error - Missing class {$class_name}.");
             return false;
         }
     }
