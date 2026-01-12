@@ -114,15 +114,13 @@ class Rental_Sync_Engine {
      * Initialize a component class if it exists
      *
      * @param string $class_name Fully qualified class name
-     * @param bool $critical Whether this component is critical (stops initialization if missing)
      * @return bool True if class was initialized, false otherwise
      */
-    private function init_class($class_name, $critical = false) {
+    private function init_class($class_name) {
         if (class_exists($class_name)) {
             $class_name::init();
             return true;
         } else {
-            $short_name = substr($class_name, strrpos($class_name, '\\') + 1);
             error_log("Rental Sync Engine: Fatal Error - Missing class {$class_name}. Please run composer install.");
             return false;
         }
@@ -150,7 +148,7 @@ class Rental_Sync_Engine {
         $this->init_class('RentalSyncEngine\Core\Logger');
         
         // Initialize settings - critical component
-        if (!$this->init_class('RentalSyncEngine\Core\Settings', true)) {
+        if (!$this->init_class('RentalSyncEngine\Core\Settings')) {
             return; // Settings is critical, stop initialization if missing
         }
         
