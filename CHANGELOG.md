@@ -2,6 +2,22 @@
 
 All notable changes to the Rental Sync Engine plugin will be documented in this file.
 
+## [1.1.0] - 2025-01-12
+
+### Changed
+- **Removed Composer dependency requirement** - Plugin now works out of the box without requiring Composer installation
+- Replaced GuzzleHTTP with WordPress native HTTP API (`wp_remote_get`, `wp_remote_post`, etc.)
+- Implemented custom PSR-4 autoloader to replace Composer autoloader
+- Updated installation documentation to remove Composer steps
+- Plugin is now fully self-contained and ready for shared hosting environments
+
+### Technical Details
+- Replaced `GuzzleHttp\Client` with WordPress HTTP API functions
+- Created custom autoloader at `includes/autoload.php`
+- All HTTP requests now use `wp_remote_*()` functions
+- Maintained rate limiting and error handling functionality
+- No external dependencies required for deployment
+
 ## [1.0.0] - 2025-12-23
 
 ### Added
@@ -78,8 +94,8 @@ All notable changes to the Rental Sync Engine plugin will be documented in this 
 - WordPress 5.8+ compatibility
 - WooCommerce 5.0+ compatibility
 - PHP 7.4+ requirement
-- Composer dependency management
-- GuzzleHTTP for API requests
+- WordPress native HTTP API for external requests
+- Custom PSR-4 autoloader for class loading
 - PSR standards compliance
 
 ### Files Added
