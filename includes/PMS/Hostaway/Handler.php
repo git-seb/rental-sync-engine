@@ -69,7 +69,13 @@ class Handler implements PMSHandlerInterface {
                         date('Y-m-d'),
                         date('Y-m-d', strtotime('+1 year'))
                     );
-                    update_post_meta($mapping->wc_product_id, '_rental_sync_availability', $availability);
+                    
+                    $product = wc_get_product($mapping->wc_product_id);
+                    if ($product) {
+                        $product->update_meta_data('_rental_sync_availability', $availability);
+                        $product->save();
+                    }
+                    
                     $results['success']++;
                 } catch (\Exception $e) {
                     $results['failed']++;
@@ -189,10 +195,10 @@ class Handler implements PMSHandlerInterface {
         $items = $order->get_items();
         $item = reset($items);
         $product_id = $item->get_product_id();
-        $pms_property_id = get_post_meta($product_id, '_rental_sync_pms_property_id', true);
+        $pms_property_id = \RentalSyncEngine\Integration\WooCommerceIntegration::get_product_pms_property_id($product_id);
         
         return array(
-            'listingMapId' => $pms_property_id,
+            'listingMapId' => $pms_property_id ?: '',
             'arrivalDate' => $order->get_meta('_rental_check_in'),
             'departureDate' => $order->get_meta('_rental_check_out'),
             'guestFirstName' => $order->get_billing_first_name(),

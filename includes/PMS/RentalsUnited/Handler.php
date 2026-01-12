@@ -334,10 +334,10 @@ class Handler implements PMSHandlerInterface {
         $items = $order->get_items();
         $item = reset($items);
         $product_id = $item->get_product_id();
-        $pms_property_id = get_post_meta($product_id, '_rental_sync_pms_property_id', true);
+        $pms_property_id = \RentalSyncEngine\Integration\WooCommerceIntegration::get_product_pms_property_id($product_id);
         
         return array(
-            'property_id' => $pms_property_id,
+            'property_id' => $pms_property_id ?: '',
             'check_in' => $order->get_meta('_rental_check_in'),
             'check_out' => $order->get_meta('_rental_check_out'),
             'guest_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
@@ -415,7 +415,10 @@ class Handler implements PMSHandlerInterface {
      * @param array $availability Availability data
      */
     private function update_product_availability($product_id, $availability) {
-        // Update product meta with availability calendar
-        update_post_meta($product_id, '_rental_sync_availability', $availability);
+        $product = wc_get_product($product_id);
+        if ($product) {
+            $product->update_meta_data('_rental_sync_availability', $availability);
+            $product->save();
+        }
     }
 }
