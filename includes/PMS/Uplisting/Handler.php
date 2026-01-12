@@ -69,7 +69,13 @@ class Handler implements PMSHandlerInterface {
                         date('Y-m-d'),
                         date('Y-m-d', strtotime('+1 year'))
                     );
-                    update_post_meta($mapping->wc_product_id, '_rental_sync_availability', $availability);
+                    
+                    $product = wc_get_product($mapping->wc_product_id);
+                    if ($product) {
+                        $product->update_meta_data('_rental_sync_availability', $availability);
+                        $product->save();
+                    }
+                    
                     $results['success']++;
                 } catch (\Exception $e) {
                     $results['failed']++;
@@ -188,7 +194,9 @@ class Handler implements PMSHandlerInterface {
         $items = $order->get_items();
         $item = reset($items);
         $product_id = $item->get_product_id();
-        $pms_property_id = get_post_meta($product_id, '_rental_sync_pms_property_id', true);
+        
+        $product = wc_get_product($product_id);
+        $pms_property_id = $product ? $product->get_meta('_rental_sync_pms_property_id', true) : '';
         
         return array(
             'property_id' => $pms_property_id,

@@ -12,8 +12,8 @@
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
- * WC requires at least: 5.0
- * WC tested up to: 8.0
+ * WC requires at least: 7.1
+ * WC tested up to: 10.4.3
  */
 
 // Exit if accessed directly
@@ -32,6 +32,17 @@ define('RENTAL_SYNC_ENGINE_BASENAME', plugin_basename(__FILE__));
 if (file_exists(RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php')) {
     require_once RENTAL_SYNC_ENGINE_PATH . 'vendor/autoload.php';
 }
+
+// Declare HPOS compatibility
+add_action('before_woocommerce_init', function () {
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+            'custom_order_tables',
+            __FILE__,
+            true
+        );
+    }
+});
 
 /**
  * Main plugin class

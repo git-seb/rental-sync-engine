@@ -193,7 +193,7 @@ class WooCommerceIntegration {
         // Check if order contains rental products
         foreach ($order->get_items() as $item) {
             $product_id = $item->get_product_id();
-            $pms_provider = get_post_meta($product_id, '_rental_sync_pms_provider', true);
+            $pms_provider = self::get_product_pms_provider($product_id);
             
             if (!empty($pms_provider)) {
                 // Push booking to PMS
@@ -294,5 +294,37 @@ class WooCommerceIntegration {
         );
         
         return $product_id ? (int) $product_id : false;
+    }
+    
+    /**
+     * Get PMS provider from product
+     *
+     * @param int $product_id WooCommerce product ID
+     * @return string|false PMS provider code or false if not found
+     */
+    public static function get_product_pms_provider($product_id) {
+        $product = wc_get_product($product_id);
+        
+        if (!$product) {
+            return false;
+        }
+        
+        return $product->get_meta('_rental_sync_pms_provider', true);
+    }
+    
+    /**
+     * Get PMS property ID from product
+     *
+     * @param int $product_id WooCommerce product ID
+     * @return string|false PMS property ID or false if not found
+     */
+    public static function get_product_pms_property_id($product_id) {
+        $product = wc_get_product($product_id);
+        
+        if (!$product) {
+            return false;
+        }
+        
+        return $product->get_meta('_rental_sync_pms_property_id', true);
     }
 }
