@@ -115,32 +115,10 @@ class Settings {
             return '';
         }
         
-        // Validate URL is reachable
-        $provider_key = self::get_provider_key_from_url_option();
-        if ($provider_key && self::get($provider_key . '_enabled') === 'yes') {
-            self::validate_api_url($url);
-        }
+        // Validate URL is reachable (only warn, don't block saving)
+        self::validate_api_url($url);
         
         return rtrim($url, '/');
-    }
-    
-    /**
-     * Get provider key from the current URL option being saved
-     *
-     * @return string|null Provider key or null
-     */
-    private static function get_provider_key_from_url_option() {
-        // Check which API URL is being saved from the POST data
-        if (isset($_POST['rental_sync_engine_ru_api_url'])) {
-            return 'rental_sync_engine_ru';
-        } elseif (isset($_POST['rental_sync_engine_or_api_url'])) {
-            return 'rental_sync_engine_or';
-        } elseif (isset($_POST['rental_sync_engine_ul_api_url'])) {
-            return 'rental_sync_engine_ul';
-        } elseif (isset($_POST['rental_sync_engine_ha_api_url'])) {
-            return 'rental_sync_engine_ha';
-        }
-        return null;
     }
     
     /**
