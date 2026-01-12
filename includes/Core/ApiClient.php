@@ -151,13 +151,11 @@ abstract class ApiClient {
         
         // Add body data for POST/PUT requests
         if (!empty($data) && in_array($method, array('POST', 'PUT'))) {
-            // Check if we need JSON or XML encoding based on Content-Type
+            // Check if we need JSON encoding based on Content-Type
             if (isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json') {
                 $args['body'] = wp_json_encode($data);
-            } else if (isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/xml') {
-                // Data is already XML string for XML requests
-                $args['body'] = $data;
             } else {
+                // For XML and other content types, data should be provided as string
                 $args['body'] = $data;
             }
         }
