@@ -334,12 +334,10 @@ class Handler implements PMSHandlerInterface {
         $items = $order->get_items();
         $item = reset($items);
         $product_id = $item->get_product_id();
-        
-        $product = wc_get_product($product_id);
-        $pms_property_id = $product ? $product->get_meta('_rental_sync_pms_property_id', true) : '';
+        $pms_property_id = \RentalSyncEngine\Integration\WooCommerceIntegration::get_product_pms_property_id($product_id);
         
         return array(
-            'property_id' => $pms_property_id,
+            'property_id' => $pms_property_id ?: '',
             'check_in' => $order->get_meta('_rental_check_in'),
             'check_out' => $order->get_meta('_rental_check_out'),
             'guest_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
